@@ -56,47 +56,139 @@
 </html> -->
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Page Replacement Matrix</title>
     <style>
-        body { font-family: Arial; text-align: center; margin: 30px; }
-        table { border-collapse: collapse; margin: auto; }
-        th, td { border: 1px solid black; padding: 10px; min-width: 50px; text-align: center; }
-        .miss { background-color: lightcoral; }
-        .hit { background-color: lightgreen; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #eef2f3, #8e9eab);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background: #fff;
+            display: inline-block;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        input, select {
+            background: #f1f1f1;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 30px auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 15px;
+            min-width: 50px;
+            background-color: white;
+            transition: transform 0.3s ease;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        td:hover {
+            transform: scale(1.1);
+        }
+
+        .miss {
+            background-color: #f28b82 !important;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .hit {
+            background-color: #81c995 !important;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .matrix-table td {
+            opacity: 0;
+            animation: fadeCell 0.5s ease forwards;
+        }
+
+        @keyframes fadeCell {
+            to {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
     <h1>Page Replacement - Matrix Visualization</h1>
 
-    <form method="POST">
+    <form method="POST" id="simForm">
         <input type="text" name="pages" placeholder="Enter page string (e.g., 7 0 1 2)" required>
         <input type="number" name="frame_size" placeholder="Frame size" min="1" required>
         <select name="algorithm" required>
             <option value="FIFO">FIFO</option>
             <option value="LRU">LRU</option>
-            <option value="Optimal">Optimal</option> <!-- Added Optimal option -->
+            <option value="Optimal">Optimal</option>
         </select>
-        <button type="submit">Simulate</button>
+        <button type="submit" id="simulateBtn">Simulate</button>
     </form>
 
     {% if result %}
         <h2>Page Reference String:</h2>
         <p>{{ result.pages | join(' ') }}</p>
 
-        <h3>Matrix Visualization ({{ result.algorithm }}):</h3>
-        <table>
+        <h3>Matrix Visualization ({{ result.algorithm }})</h3>
+        <table class="matrix-table" id="matrixTable">
             <tr>
                 {% for i in range(result.steps) %}
-                    <th>{{ result.pages[i] }}</th>
+                    <th style="animation-delay: {{ loop.index0 * 0.1 }}s">{{ result.pages[i] }}</th>
                 {% endfor %}
             </tr>
 
             {% for row in range(result.frame_size) %}
                 <tr>
                     {% for col in range(result.steps) %}
-                        <td>
+                        <td style="animation-delay: {{ col * 0.1 }}s">
                             {% if result.matrix[col][row] != "" %}
                                 {{ result.matrix[col][row] }}
                             {% endif %}
@@ -107,12 +199,32 @@
 
             <tr>
                 {% for status in result.status_list %}
-                    <td class="{{ 'hit' if status == 'HIT' else 'miss' }}">{{ status }}</td>
+                    <td class="{{ 'hit' if status == 'HIT' else 'miss' }}" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                        {{ status }}
+                    </td>
                 {% endfor %}
             </tr>
         </table>
 
-        <h3>Total Page Faults: {{ result.faults }}</h3>
+        <h3>Total Page Faults: <span style="color:#d32f2f">{{ result.faults }}</span></h3>
     {% endif %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("simForm");
+            const simBtn = document.getElementById("simulateBtn");
+
+            form.addEventListener("submit", () => {
+                simBtn.textContent = "Simulating...";
+                simBtn.disabled = true;
+            });
+
+            // Animate matrix cells delay
+            const cells = document.querySelectorAll(".matrix-table td");
+            cells.forEach((cell, index) => {
+                cell.style.animationDelay = `${index * 0.05}s`;
+            });
+        });
+    </script>
 </body>
 </html>

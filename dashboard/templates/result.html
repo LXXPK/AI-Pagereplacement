@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FIFO Results</title>
+</head>
+<body>
+    <h2>Simulation Result</h2>
+    <p><strong>Page Hits:</strong> {{ hits }}</p>
+    <p><strong>Page Faults:</strong> {{ faults }}</p>
+    <img src="{{ url_for('static', filename='plots/fifo_plot.png') }}" alt="FIFO Plot">
+    <br><br>
+    <a href="/">Back</a>
+</body>
+</html>

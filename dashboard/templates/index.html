@@ -1,0 +1,118 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>FIFO Page Replacement Matrix</title>
+    <style>
+        body { font-family: Arial; text-align: center; margin: 30px; }
+        table { border-collapse: collapse; margin: auto; }
+        th, td { border: 1px solid black; padding: 10px; min-width: 50px; text-align: center; }
+        .miss { background-color: lightcoral; }
+        .hit { background-color: lightgreen; }
+    </style>
+</head>
+<body>
+    <h1>FIFO Page Replacement - Matrix Visualization</h1>
+
+    <form method="POST">
+        <input type="text" name="pages" placeholder="Enter page string (e.g., 7 0 1 2)" required>
+        <input type="number" name="frame_size" placeholder="Frame size" min="1" required>
+        <button type="submit">Simulate</button>
+    </form>
+
+    {% if result %}
+        <h2>Page Reference String:</h2>
+        <p>{{ result.pages | join(' ') }}</p>
+
+        <h3>Matrix Visualization</h3>
+        <table>
+            <tr>
+                {% for i in range(result.steps) %}
+                    <th>{{ result.pages[i] }}</th>
+                {% endfor %}
+            </tr>
+
+            {% for row in range(result.frame_size) %}
+                <tr>
+                    {% for col in range(result.steps) %}
+                        <td>
+                            {% if result.matrix[col][row] != "" %}
+                                {{ result.matrix[col][row] }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+
+            <tr>
+                {% for status in result.status_list %}
+                    <td class="{{ 'hit' if status == 'HIT' else 'miss' }}">{{ status }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+
+        <h3>Total Page Faults: {{ result.faults }}</h3>
+    {% endif %}
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Replacement Matrix</title>
+    <style>
+        body { font-family: Arial; text-align: center; margin: 30px; }
+        table { border-collapse: collapse; margin: auto; }
+        th, td { border: 1px solid black; padding: 10px; min-width: 50px; text-align: center; }
+        .miss { background-color: lightcoral; }
+        .hit { background-color: lightgreen; }
+    </style>
+</head>
+<body>
+    <h1>Page Replacement - Matrix Visualization</h1>
+
+    <form method="POST">
+        <input type="text" name="pages" placeholder="Enter page string (e.g., 7 0 1 2)" required>
+        <input type="number" name="frame_size" placeholder="Frame size" min="1" required>
+        <select name="algorithm" required>
+            <option value="FIFO">FIFO</option>
+            <option value="LRU">LRU</option>
+        </select>
+        <button type="submit">Simulate</button>
+    </form>
+
+    {% if result %}
+        <h2>Page Reference String:</h2>
+        <p>{{ result.pages | join(' ') }}</p>
+
+        <h3>Matrix Visualization ({{ result.algorithm }}):</h3>
+        <table>
+            <tr>
+                {% for i in range(result.steps) %}
+                    <th>{{ result.pages[i] }}</th>
+                {% endfor %}
+            </tr>
+
+            {% for row in range(result.frame_size) %}
+                <tr>
+                    {% for col in range(result.steps) %}
+                        <td>
+                            {% if result.matrix[col][row] != "" %}
+                                {{ result.matrix[col][row] }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+
+            <tr>
+                {% for status in result.status_list %}
+                    <td class="{{ 'hit' if status == 'HIT' else 'miss' }}">{{ status }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+
+        <h3>Total Page Faults: {{ result.faults }}</h3>
+    {% endif %}
+</body>
+</html>
